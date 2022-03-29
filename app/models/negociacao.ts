@@ -6,8 +6,8 @@ export class Negociacao{
         public readonly valor: number
     ){}
 
-    get data(){
-        return new Date(this._data.getMilliseconds());
+    get data(): Date{
+        return new Date(this._data.getTime());
     }
 
     get volume(): number{
