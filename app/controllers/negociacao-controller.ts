@@ -1,3 +1,4 @@
+import { DiasDaSemana } from "../enums/dias-da-semana.js";
 import { Negociacao } from "../models/negociacao.js";
 import { Negociacoes } from "../models/negociacoes.js";
 import { MensagemView } from "../views/mensagem-view.js";
@@ -19,13 +20,28 @@ export class NegociacaoController{
     }
 
     public adiciona(): void{
-        const negociacao = new Negociacao(
+        const negociacao = this.criaNegociacao();
+
+        if (!this.ehDiaUtil(negociacao.data)){
+            this.mensagemView.update('A data da negociação precisa ser um dia útil');
+            return;
+        }
+      
+        this.negociacoes.adiciona(negociacao);
+        this.atualizaView();
+        this.limpaFormulario();
+        
+    }
+
+    private criaNegociacao(): Negociacao{
+        return new Negociacao(
             new Date(this.inputData.value.replace(/-/g,',')), 
             parseInt(this.inputQuantidade.value), 
             parseFloat(this.inputValor.value));
-        this.negociacoes.adiciona(negociacao);
-        this,this.atualizaView();
-        this.limpaFormulario();
+    }
+
+    private ehDiaUtil(data: Date): boolean{
+        return (data.getDay() > DiasDaSemana.DOMINGO && data.getDay() < DiasDaSemana.SABADO);
     }
 
     private atualizaView(): void{
